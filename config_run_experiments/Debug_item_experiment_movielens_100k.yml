@@ -1,0 +1,74 @@
+experiment:
+  dataset: movielens_100k
+  data_config:
+    strategy: fixed
+    train_path: ../data/movielens_100k/filtered_data/0/train.tsv
+    test_path: ../data/movielens_100k/filtered_data/0/test.tsv
+  top_k: 50
+  path_output_rec_result: ./results/movielens_100k_item/recs/
+  path_output_rec_weight: ./results/movielens_100k_item/weights/
+  path_output_rec_performance: ./results/movielens_100k_item/performance/
+  path_log_folder: ../log/movielens_100k_item/
+  evaluation:
+    cutoffs:  20
+    simple_metrics: [ nDCGRendle2020 ]
+  external_models_path: ../external/models/__init__.py
+  models:
+    # Random:
+    #   meta:
+    #     verbose: True
+    #     save_recs: True
+    #   seed: 42
+    # external.MostPop:
+    #   meta:
+    #     verbose: True
+    #     save_recs: True
+    # ItemKNN:
+    #   meta:
+    #     verbose: True
+    #     save_recs: True
+    #     validation_metric: nDCGRendle2020@20
+    #     hyper_opt_alg: grid
+    #   neighbors: [ 50, 100, 250, 500 ]
+    #   similarity: [ cosine, jaccard, euclidean ]
+    #   implementation: standard
+    ItemFairANN:
+      meta:
+        verbose: True
+        save_recs: True
+        validation_metric: nDCGRendle2020@20
+        hyper_opt_alg: grid
+      neighbors: [ 50, 100, 250, 500 ]
+      similarity: [ cosine, jaccard, euclidean ]
+      # sampling_strategy: [ no_sampling, uniform, weighted_uniform, opt, approx_degree, rank ]
+      sampling_strategy: [ approx_degree ]
+      n_hash: [ 2, 3, 4, 5 ] # k
+      n_tables: [ 1,2,4,8 ] # L
+    # ItemANNfaissLSH:
+    #   meta:
+    #     verbose: True
+    #     save_recs: True
+    #     validation_metric: nDCGRendle2020@20
+    #     hyper_opt_alg: grid
+    #   neighbors: [ 50, 100, 250, 500 ]
+    #   similarity: cosine
+    #   nbits: [2, 4, 6, 8]
+    # ItemANNOY:
+    #   meta:
+    #     verbose: True
+    #     save_recs: True
+    #     validation_metric: nDCGRendle2020@20
+    #     hyper_opt_alg: grid
+    #   neighbors: [ 50, 100, 250, 500 ]
+    #   similarity: [ angular, euclidean, hamming ] # hamming distance is the most similar to the jaccard one
+    #   n_trees: [1,3,5]
+    #   search_k: [-1,5,10]
+    # ItemKNNfairness:
+    #   meta:
+    #     verbose: True
+    #     save_recs: True
+    #     hyper_opt_alg: grid
+    #     validation_metric: nDCGRendle2020@20
+    #   neighbors: [ 50, 100, 250, 500 ]
+    #   similarity: [ cosine, jaccard, euclidean ]
+    #   pre_post_processing: [ parity, interactions, items ]
