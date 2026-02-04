@@ -1,3 +1,0 @@
-from elliot.run import run_experiment
-
-run_experiment("config_run_experiments/Debug_item_experiment_movielens_100k.yml")
