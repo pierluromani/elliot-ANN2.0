@@ -55,6 +55,18 @@ class LSHSimilarity(object):
         # for the item-based methods, d is the number of users on the platform
         self._lsh_index = LSHBuilder.build(d=len(self._users), r=self._similarity_threshold, k=self._n_hash, L=self._n_tables, lsh_params=lsh_params, validate=validate)
 
+        self.meta_data={
+            "model": "ItemFairANN",
+            "num_neighbors": self._num_neighbors,
+            "similarity": self._similarity,
+            "sampling_strategy": self._sampling_strategy,
+            "implicit": self._implicit,
+            "n_hash": self._n_hash,
+            "n_tables": self._n_tables,
+            "similarity_threshold": self._similarity_threshold,
+            "w": w
+        }
+
     def initialize(self):
         """
         This function initialize the data model
@@ -70,6 +82,14 @@ class LSHSimilarity(object):
         self._similarity_matrix = np.empty((len(self._items), len(self._items)))
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity, self._sampling_strategy)  # the resulting matrix will be an ndarray
+
+        # Calculate the CR
+        n_candidates_pair= np.count_nonzero(self._similarity_matrix)
+        CR= n_candidates_pair / (len(self._items) * len(self._items))
+        print(f"CR: {CR}")
+        self.meta_data["CR"] = CR
+
+
 
         data, rows_indices, cols_indptr = [], [], []
 
