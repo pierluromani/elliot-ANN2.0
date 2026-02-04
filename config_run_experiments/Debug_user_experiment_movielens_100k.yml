@@ -13,19 +13,55 @@ experiment:
   gpu: -1
   external_models_path: ../external/models/__init__.py
   models:
-    UserKNN:
-      meta:
-        verbose: True
-        save_recs: True
-      neighbors: [50]
-      similarity: cosine
-    UserFairANN:
-      meta:
-        verbose: True
-        save_recs: True
-      neighbors: [50]
-      similarity: jaccard
-      sampling_strategy: approx_degree
-      n_hash: 5
-      n_tables: 8
+#    UserKNN:
+#      meta:
+#        verbose: True
+#        save_recs: True
+#      neighbors: [50]
+#      similarity: euclidean
+#    UserFairANN:
+#      meta:
+#        verbose: True
+#        save_recs: True
+#      neighbors: [50]
+#      similarity: jaccard
+#      sampling_strategy: approx_degree
+#      n_hash: 5
+#      n_tables: 8
+#    UserANNfaissLSH:
+#      meta:
+#        verbose: True
+#        save_recs: True
+#        validation_metric: nDCGRendle2020@20
+#        hyper_opt_alg: grid
+#      neighbors: [ 50 ]
+#      similarity: cosine
+#      nbits: [4]
+   UserANNOY:
+     meta:
+       verbose: True
+       save_recs: True
+       validation_metric: nDCGRendle2020@20
+       hyper_opt_alg: grid
+     neighbors: [ 50 ]
+     similarity: [ hamming ] # hamming distance is the most similar to the jaccard one
+     n_trees: [3,5]
+     search_k: [-1,10]
+  #  UserKNNfairness:
+  #    meta:
+  #      verbose: True
+  #      save_recs: True
+  #      hyper_opt_alg: grid
+  #      validation_metric: nDCGRendle2020@20
+  #    neighbors: [ 100 ]
+  #    similarity: [ jaccard ]
+  #   UserANNLSH:
+  #     meta:
+  #       verbose: True
+  #       save_recs: True
+  #     neighbors: [ 50 ]
+  #     similarity: [ cosine ]
+  #     n_hash: [ 5 ]
+  #     n_tables: [ 5 ]
+  #     similarity_threshold: [ 0.5 ]
   csv_path: ./results/movielens_100k_user/performance/CR_cutoff_20.csv

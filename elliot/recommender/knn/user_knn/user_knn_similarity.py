@@ -69,7 +69,6 @@ class Similarity(object):
             # self.process_similarity(self._similarity)
             self._similarity_matrix = (1 / (1 + euclidean_distances(self._URM))) # avoid the function call
 
-             Calculate and log CR
         if self._csv_path:
             n_users = self._data.num_users
             n_candidates_pair = np.count_nonzero(self._similarity_matrix)
