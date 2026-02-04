@@ -94,7 +94,7 @@ class ANNLSHSimilarity(object):
         # Calculate and log CR
         if self._csv_path:
             n_items = self._data.num_items
-            n_candidates_pair = W_sparse.nnz
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
             CR = n_candidates_pair / (n_items * n_items)
             print(f"CR: {CR}")
             

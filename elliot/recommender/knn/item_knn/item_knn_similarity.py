@@ -102,7 +102,24 @@ class Similarity(object):
 
             W_sparse = sparse.csc_matrix((data, rows_indices, cols_indptr),
                                          shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
-            del self._similarity_matrix
+        if self._csv_path:
+            n_items = self._data.num_items
+            if hasattr(self, '_similarity_matrix'):
+                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            else:
+                n_candidates_pair = W_sparse.nnz
+            CR = n_candidates_pair / (n_items * n_items)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "ItemKNN",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
+        del self._similarity_matrix
 
         # self._similarity_matrix = normalize(self._similarity_matrix, norm='l1', axis=1)
 
@@ -134,20 +151,7 @@ class Similarity(object):
         print("Predictions have been computed")
         
         # Calculate and log CR
-        if self._csv_path:
-            n_items = self._data.num_items
-            n_candidates_pair = W_sparse.nnz
-            CR = n_candidates_pair / (n_items * n_items)
-            print(f"CR: {CR}")
-            
-            meta_data = {
-                "model": "ItemKNN",
-                "neighbors": self._num_neighbors,
-                "similarity": self._similarity,
-                "implicit": self._implicit,
-                "CR": CR
-            }
-            add_CR_instance(self._csv_path, meta_data)
+        
         ##############
         # self.compute_neighbors()
 
@@ -284,3 +288,4 @@ class Similarity(object):
     def save_weights(self, path):
         with open(path, "wb") as f:
             pickle.dump(self.get_model_state(), f)
+    if hasattr(self, '_similarity_matrix'):\n        del self._similarity_matrix
