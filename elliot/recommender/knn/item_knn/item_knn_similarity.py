@@ -288,4 +288,3 @@ class Similarity(object):
     def save_weights(self, path):
         with open(path, "wb") as f:
             pickle.dump(self.get_model_state(), f)
-    if hasattr(self, '_similarity_matrix'):\n        del self._similarity_matrix

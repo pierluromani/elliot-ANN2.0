@@ -196,12 +196,7 @@ class Similarity(object):
             W_sparse = sparse.csc_matrix((data, rows_indices, cols_indptr),
                                          shape=(len(self._data.items), len(self._data.items)),
                                          dtype=np.float32).tocsr()
-
-
-        self._preds = self._URM.dot(W_sparse)
         
-        # Calculate and log CR
-        # Calculate and log CR
         if self._csv_path:
             n_items = self._data.num_items
             n_candidates_pair = np.count_nonzero(self._similarity_matrix)
@@ -216,9 +211,15 @@ class Similarity(object):
                 "CR": CR
             }
             add_CR_instance(self._csv_path, meta_data)
-
-        if hasattr(self, '_similarity_matrix'):
+        
+        if   self._similarity == "euclidean":
             del self._similarity_matrix
+
+
+        self._preds = self._URM.dot(W_sparse)
+        
+        # Calculate and log CR
+        
 
 
         # for the item-based algorithm we use the Item Popularity grouping
