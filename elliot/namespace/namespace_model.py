@@ -61,6 +61,7 @@ _meta = 'meta'
 _random_seed = 'random_seed'
 _align_side_with_train = 'align_side_with_train'
 _backend = 'backend'
+_csv_path = 'csv_path'
 
 
 class NameSpaceModel:
@@ -130,7 +131,7 @@ class NameSpaceModel:
         for p in [_data_config, _weights, _recs, _dataset, _top_k, _performance, _logger_config,
                   _log_folder, _dataloader, _splitting, _prefiltering, _evaluation, _external_models_path, _external_posthoc_path,
                   _print_triplets, _config_test, _negative_sampling, _binarize, _random_seed, _align_side_with_train,
-                  _version, _backend]:
+                  _version, _backend, _csv_path]:
             if p == _data_config:
                 side_information = self.config[_experiment][p].get("side_information", None)
 
@@ -247,6 +248,8 @@ class NameSpaceModel:
                     setattr(self.base_namespace, p, backend)
                 else:
                     setattr(self.base_namespace, p, [backend])
+            elif p == _csv_path:
+                setattr(self.base_namespace, p, self.config[_experiment].get(p, None))
             else:
                 if self.config[_experiment].get(p):
                     setattr(self.base_namespace, p, self.config[_experiment][p])

@@ -75,7 +75,8 @@ class ItemFairANN(RecMixin, BaseRecommenderModel):
         self._model = LSHSimilarity(data=self._data, num_neighbors=self._num_neighbors, similarity=self._similarity,
                                     sampling_strategy=self._sampling_strategy, implicit=self._implicit,
                                     validate=self._validate, n_hash=self._n_hash, n_tables=self._n_tables,
-                                    similarity_threshold=self._similarity_threshold, w=self._w)
+                                    similarity_threshold=self._similarity_threshold, w=self._w, 
+                                    csv_path=self._csv_path)
 
     def get_single_recommendation(self, mask, k, *args):
         # return {u: self._model.get_user_recs(u, mask, k) for u in self._ratings.keys()}

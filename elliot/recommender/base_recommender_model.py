@@ -62,6 +62,7 @@ class BaseRecommenderModel(ABC):
         self._verbose = getattr(self._params.meta, "verbose", None)
         self._validation_rate = getattr(self._params.meta, "validation_rate", 1)
         self._optimize_internal_loss = getattr(self._params.meta, "optimize_internal_loss", False)
+        self._csv_path = getattr(data.config, "csv_path", None)
         self._epochs = int(getattr(self._params, "epochs", 2))
         self._seed = getattr(self._params, "seed", 42)
         self._early_stopping = EarlyStopping(SimpleNamespace(**getattr(self._params, "early_stopping", {})),

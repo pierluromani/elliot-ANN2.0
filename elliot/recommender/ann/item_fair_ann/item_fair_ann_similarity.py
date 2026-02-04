@@ -9,6 +9,7 @@ import similaripy as sim
 from elliot.recommender.ann.lsh import LSHBuilder
 from tqdm import tqdm
 from operator import itemgetter
+from elliot.utils.custom_logging import add_CR_instance
 
 
 class LSHSimilarity(object):
@@ -17,7 +18,7 @@ class LSHSimilarity(object):
     """
 
     def __init__(self, data, num_neighbors, similarity, sampling_strategy, implicit, validate, n_hash, n_tables,
-                 similarity_threshold, w=1):
+                 similarity_threshold, w=1, csv_path=None):
         self._data = data
         self._ratings = data.train_dict  # TODO capire se serve oppure no, è un dizionario {UserId: {ItemId:Rating}}
         self._num_neighbors = num_neighbors
@@ -27,7 +28,9 @@ class LSHSimilarity(object):
         self._validate = validate # lsh parameter that tells to check the actual similarity for the candidates
         self._n_hash = n_hash
         self._n_tables = n_tables
+        self._n_tables = n_tables
         self._similarity_threshold = similarity_threshold # similarity threshold used during the validation of candidates
+        self._csv_path = csv_path
 
         if self._implicit:
             self._URM = self._data.sp_i_train
@@ -88,6 +91,8 @@ class LSHSimilarity(object):
         CR= n_candidates_pair / (len(self._items) * len(self._items))
         print(f"CR: {CR}")
         self.meta_data["CR"] = CR
+        if self._csv_path:
+            add_CR_instance(self._csv_path, self.meta_data)
 
 
 
