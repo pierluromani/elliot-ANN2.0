@@ -6,13 +6,14 @@ from scipy import sparse
 from annoy import AnnoyIndex
 from operator import itemgetter
 from tqdm import tqdm
+from elliot.utils.custom_logging import add_CR_instance
 
 class ANNOYSimilarity(object):
     """
     ANN class to compute the similarity in an approximated way by exploiting LSH
     """
 
-    def __init__(self, data, num_neighbors, similarity, implicit, n_trees, search_k):
+    def __init__(self, data, num_neighbors, similarity, implicit, n_trees, search_k, csv_path=None):
         self._data = data
         self._ratings = data.train_dict  # TODO capire se serve oppure no, è un dizionario {UserId: {ItemId:Rating}}
         self._num_neighbors = num_neighbors
@@ -20,6 +21,7 @@ class ANNOYSimilarity(object):
         self._n_trees = n_trees
         self._search_k = search_k
         self._implicit = implicit # tells whether to use the ratings as explicit or implicit feedbacks
+        self._csv_path = csv_path
 
         if self._implicit:
             self._URM = self._data.sp_i_train
@@ -51,7 +53,25 @@ class ANNOYSimilarity(object):
         self._similarity_matrix = np.empty((len(self._users), len(self._users)))
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity)  # the resulting matrix will be an ndarray
-
+        
+        # Calculate and log CR
+        if self._csv_path:
+            n_users = self._data.num_users
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            CR = n_candidates_pair / (n_users * n_users)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "UserAnnoy",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "n_trees": self._n_trees,
+                "search_k": self._search_k,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
+        
         data, rows_indices, cols_indptr = [], [], []
 
         column_row_index = np.arange(len(self._users), dtype=np.int32)

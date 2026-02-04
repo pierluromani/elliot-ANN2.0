@@ -1,0 +1,31 @@
+experiment:
+  backend: tensorflow
+  data_config:
+    strategy: fixed
+    train_path: ../data/movielens_100k/filtered_data/0/train.tsv
+
+    test_path: ../data/movielens_100k/filtered_data/0/test.tsv
+  dataset: movielens_100k
+  top_k: 20
+  evaluation:
+    cutoffs: [20]
+    simple_metrics: [nDCGRendle2020, EPC, Gini]
+  gpu: -1
+  external_models_path: ../external/models/__init__.py
+  models:
+    UserKNN:
+      meta:
+        verbose: True
+        save_recs: True
+      neighbors: [50]
+      similarity: cosine
+    UserFairANN:
+      meta:
+        verbose: True
+        save_recs: True
+      neighbors: [50]
+      similarity: jaccard
+      sampling_strategy: approx_degree
+      n_hash: 5
+      n_tables: 8
+  csv_path: ./results/movielens_100k_user/performance/CR_cutoff_20.csv

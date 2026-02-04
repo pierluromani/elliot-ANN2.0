@@ -79,7 +79,8 @@ class UserKNN(RecMixin, BaseRecommenderModel):
             #self._model = Similarity(data=self._data, num_neighbors=self._num_neighbors, similarity=self._similarity, implicit=self._implicit)
             self._model = Similarity(data=self._data, num_neighbors=self._num_neighbors, similarity=self._similarity,
                                      implicit=self._implicit, alpha=self._asymmetric_alpha,
-                                     tversky_alpha=self._tversky_alpha, tversky_beta=self._tversky_beta)
+                                     tversky_alpha=self._tversky_alpha, tversky_beta=self._tversky_beta,
+                                     csv_path=self._csv_path)
 
     def get_single_recommendation(self, mask, k, *args):
         # return {u: self._model.get_user_recs(u, mask, k) for u in self._ratings.keys()}

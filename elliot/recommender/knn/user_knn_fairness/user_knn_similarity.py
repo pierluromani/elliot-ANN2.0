@@ -8,19 +8,21 @@ import similaripy as sim
 import random
 
 from operator import itemgetter
+from elliot.utils.custom_logging import add_CR_instance
 
 class Similarity(object):
     """
     Simple kNN class
     """
 
-    def __init__(self, data, num_neighbors, similarity, implicit, pre_post_processing, **kwargs):
+    def __init__(self, data, num_neighbors, similarity, implicit, pre_post_processing, csv_path=None, **kwargs):
         self._data = data
         self._ratings = data.train_dict
         self._num_neighbors = num_neighbors
         self._similarity = similarity
         self._implicit = implicit
         self._pre_post_processing = pre_post_processing
+        self._csv_path = csv_path
 
         if self._implicit:
             self._URM = self._data.sp_i_train
@@ -170,6 +172,22 @@ class Similarity(object):
 
             # self.process_similarity(self._similarity)
             self._similarity_matrix = (1 / (1 + euclidean_distances(self._URM))) # avoid the function call
+            
+            # Calculate and log CR
+            if self._csv_path:
+                n_users = self._data.num_users
+                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+                CR = n_candidates_pair / (n_users * n_users)
+                print(f"CR: {CR}")
+                
+                meta_data = {
+                    "model": "UserKNNFairness",
+                    "neighbors": self._num_neighbors,
+                    "similarity": self._similarity,
+                    "implicit": self._implicit,
+                    "CR": CR
+                }
+                add_CR_instance(self._csv_path, meta_data)
 
             data, rows_indices, cols_indptr = [], [], []
 

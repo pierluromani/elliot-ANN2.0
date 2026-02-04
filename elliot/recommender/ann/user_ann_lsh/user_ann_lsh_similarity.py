@@ -7,6 +7,7 @@ from sklearn.metrics import pairwise_distances
 from operator import itemgetter
 
 from elliot.recommender.ann.lsh import LSHBuilder
+from elliot.utils.custom_logging import add_CR_instance
 
 
 class ANNLSHSimilarity(object):
@@ -15,7 +16,7 @@ class ANNLSHSimilarity(object):
     """
 
     def __init__(self, data, num_neighbors, similarity, implicit, validate, n_hash, n_tables,
-                 similarity_threshold, w=1):
+                 similarity_threshold, w=1, csv_path=None):
         self._data = data
         self._ratings = data.train_dict  # TODO capire se serve oppure no, è un dizionario {UserId: {ItemId:Rating}}
         self._num_neighbors = num_neighbors
@@ -25,6 +26,7 @@ class ANNLSHSimilarity(object):
         self._n_hash = n_hash
         self._n_tables = n_tables
         self._similarity_threshold = similarity_threshold  # similarity threshold used during the validation of candidates
+        self._csv_path = csv_path
 
         if self._implicit:
             self._URM = self._data.sp_i_train
@@ -66,6 +68,25 @@ class ANNLSHSimilarity(object):
         self._similarity_matrix = np.empty((len(self._users), len(self._users)))
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity)  # the resulting matrix will be an ndarray
+        
+        # Calculate and log CR
+        if self._csv_path:
+            n_users = self._data.num_users
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            CR = n_candidates_pair / (n_users * n_users)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "UserANNLSH",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "n_hash": self._n_hash,
+                "n_tables": self._n_tables,
+                "similarity_threshold": self._similarity_threshold,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
 
         data, rows_indices, cols_indptr = [], [], []
 
