@@ -60,7 +60,7 @@ class LSHSimilarity(object):
 
         self.meta_data={
             "model": "ItemFairANN",
-            "num_neighbors": self._num_neighbors,
+            "neighbors": self._num_neighbors,
             "similarity": self._similarity,
             "sampling_strategy": self._sampling_strategy,
             "implicit": self._implicit,

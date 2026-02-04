@@ -8,7 +8,7 @@ def create_CR_dataset(config_path: str, excluded_params: list):
         data = yaml.safe_load(file)
 
     # Create a list of all the parameters to be recorded
-    records = ["CR", "Model"]
+    records = ["CR", "model"]
     
     # Iterate all the models and collect their parameters
     for model_name, config in data["experiment"]["models"].items():

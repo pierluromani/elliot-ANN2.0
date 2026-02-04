@@ -24,15 +24,15 @@ experiment:
     #   meta:
     #     verbose: True
     #     save_recs: True
-    # ItemKNN:
-    #   meta:
-    #     verbose: True
-    #     save_recs: True
-    #     validation_metric: nDCGRendle2020@20
-    #     hyper_opt_alg: grid
-    #   neighbors: [ 50, 100, 250, 500 ]
-    #   similarity: [ cosine, jaccard, euclidean ]
-    #   implementation: standard
+    ItemKNN:
+      meta:
+        verbose: True
+        save_recs: True
+        validation_metric: nDCGRendle2020@20
+        hyper_opt_alg: grid
+      neighbors: [ 50 ]
+      similarity: [ cosine ]
+      implementation: standard
     ItemFairANN:
       meta:
         verbose: True

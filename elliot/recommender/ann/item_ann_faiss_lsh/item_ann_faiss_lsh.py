@@ -61,7 +61,7 @@ class ItemANNfaissLSH(RecMixin, BaseRecommenderModel):
         self._ratings = self._data.train_dict
         # initialize the LSH Similarity model
         self._model = LSHfaissSimilarity(data=self._data, num_neighbors=self._num_neighbors, similarity=self._similarity,
-                                    implicit=self._implicit, nbits=self._nbits)
+                                    implicit=self._implicit, nbits=self._nbits, csv_path=self._csv_path)
 
     def get_single_recommendation(self, mask, k, *args):
         # return {u: self._model.get_user_recs(u, mask, k) for u in self._ratings.keys()}

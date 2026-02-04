@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.metrics import pairwise_distances
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances, haversine_distances, chi2_kernel, \
     manhattan_distances
+from elliot.utils.custom_logging import add_CR_instance
 
 
 class Similarity(object):
@@ -11,12 +12,13 @@ class Similarity(object):
     Simple VSM class
     """
 
-    def __init__(self, data, user_profile_matrix, item_attribute_matrix, similarity):
+    def __init__(self, data, user_profile_matrix, item_attribute_matrix, similarity, csv_path=None):
         self._data = data
         self._ratings = data.train_dict
         self._user_profile_matrix = user_profile_matrix
         self._item_attribute_matrix = item_attribute_matrix
         self._similarity = similarity
+        self._csv_path = csv_path
 
         self._users = self._data.users
         self._items = self._data.items
@@ -39,6 +41,20 @@ class Similarity(object):
         self._similarity_matrix = np.empty((len(self._users), len(self._items)))
 
         self.process_similarity(self._similarity)
+        
+        # Calculate and log CR
+        if self._csv_path:
+            n_entries = self._similarity_matrix.size
+            n_nonzero = np.count_nonzero(self._similarity_matrix)
+            CR = n_nonzero / n_entries
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "VSM",
+                "similarity": self._similarity,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
 
     def process_similarity(self, similarity):
         if similarity == "cosine":

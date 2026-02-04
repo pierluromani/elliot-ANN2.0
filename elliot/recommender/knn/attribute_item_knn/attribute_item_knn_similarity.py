@@ -4,6 +4,7 @@ import numpy as np
 from scipy import sparse
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances, haversine_distances, chi2_kernel, manhattan_distances
 from sklearn.metrics import pairwise_distances
+from elliot.utils.custom_logging import add_CR_instance
 
 
 
@@ -13,13 +14,14 @@ class Similarity(object):
     Simple kNN class
     """
 
-    def __init__(self, data, attribute_matrix, num_neighbors, similarity, implicit):
+    def __init__(self, data, attribute_matrix, num_neighbors, similarity, implicit, csv_path=None):
         self._data = data
         self._ratings = data.train_dict
         self._attribute_matrix = attribute_matrix
         self._num_neighbors = num_neighbors
         self._similarity = similarity
         self._implicit = implicit
+        self._csv_path = csv_path
 
         if self._implicit:
             self._URM = self._data.sp_i_train
@@ -75,6 +77,22 @@ class Similarity(object):
         W_sparse = sparse.csc_matrix((data, rows_indices, cols_indptr),
                                      shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
         self._preds = self._URM.dot(W_sparse).toarray()
+        
+        # Calculate and log CR
+        if self._csv_path:
+            n_items = self._data.num_items
+            n_candidates_pair = W_sparse.nnz
+            CR = n_candidates_pair / (n_items * n_items)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "AttributeItemKNN",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
         ##############
         # self.compute_neighbors()
 

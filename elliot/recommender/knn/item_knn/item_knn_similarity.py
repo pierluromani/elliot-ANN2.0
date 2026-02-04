@@ -8,6 +8,7 @@ from sklearn.metrics import pairwise_distances
 from sklearn.preprocessing import normalize
 import similaripy as sim
 from operator import itemgetter
+from elliot.utils.custom_logging import add_CR_instance
 
 
 class Similarity(object):
@@ -24,6 +25,7 @@ class Similarity(object):
         self._alpha = kwargs['alpha']
         self._tversky_alpha = kwargs['tversky_alpha']
         self._tversky_beta = kwargs['tversky_beta']
+        self._csv_path = kwargs.get('csv_path', None)
 
 
         if self._implicit:
@@ -128,7 +130,24 @@ class Similarity(object):
         # W_sparse = sparse.csc_matrix((data, rows_indices, cols_indptr),
         #                              shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
         self._preds = self._URM.dot(W_sparse)
+        self._preds = self._URM.dot(W_sparse)
         print("Predictions have been computed")
+        
+        # Calculate and log CR
+        if self._csv_path:
+            n_items = self._data.num_items
+            n_candidates_pair = W_sparse.nnz
+            CR = n_candidates_pair / (n_items * n_items)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "ItemKNN",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
         ##############
         # self.compute_neighbors()
 

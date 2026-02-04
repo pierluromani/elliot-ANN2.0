@@ -10,6 +10,7 @@ import similaripy as sim
 import random
 from copy import deepcopy
 from operator import itemgetter
+from elliot.utils.custom_logging import add_CR_instance
 
 
 class Similarity(object):
@@ -24,6 +25,7 @@ class Similarity(object):
         self._similarity = similarity
         self._implicit = implicit
         self._pre_post_processing = pre_post_processing
+        self._csv_path = kwargs.get('csv_path', None)
 
         if self._implicit:
             self._URM = self._data.sp_i_train  # this stores the interactions
@@ -198,6 +200,22 @@ class Similarity(object):
 
 
         self._preds = self._URM.dot(W_sparse)
+        
+        # Calculate and log CR
+        if self._csv_path:
+            n_items = self._data.num_items
+            n_candidates_pair = W_sparse.nnz
+            CR = n_candidates_pair / (n_items * n_items)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "ItemKNNFairness",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
 
 
         # for the item-based algorithm we use the Item Popularity grouping

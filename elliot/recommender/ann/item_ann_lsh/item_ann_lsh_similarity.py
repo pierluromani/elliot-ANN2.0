@@ -7,6 +7,7 @@ from sklearn.metrics import pairwise_distances
 
 from elliot.recommender.ann.lsh import LSHBuilder
 from operator import itemgetter
+from elliot.utils.custom_logging import add_CR_instance
 
 
 class ANNLSHSimilarity(object):
@@ -15,7 +16,7 @@ class ANNLSHSimilarity(object):
     """
 
     def __init__(self, data, num_neighbors, similarity, implicit, validate, n_hash, n_tables,
-                 similarity_threshold, w=1):
+                 similarity_threshold, w=1, csv_path=None):
         self._data = data
         self._ratings = data.train_dict  # TODO capire se serve oppure no, è un dizionario {UserId: {ItemId:Rating}}
         self._num_neighbors = num_neighbors
@@ -24,7 +25,9 @@ class ANNLSHSimilarity(object):
         self._validate = validate # lsh parameter that tells to check the actual similarity for the candidates
         self._n_hash = n_hash
         self._n_tables = n_tables
+        self._n_tables = n_tables
         self._similarity_threshold = similarity_threshold # similarity threshold used during the validation of candidates
+        self._csv_path = csv_path
 
         if self._implicit:
             self._URM = self._data.sp_i_train
@@ -87,6 +90,25 @@ class ANNLSHSimilarity(object):
         W_sparse = sparse.csc_matrix((data, rows_indices, cols_indptr),
                                      shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
         self._preds = self._URM.dot(W_sparse)
+        
+        # Calculate and log CR
+        if self._csv_path:
+            n_items = self._data.num_items
+            n_candidates_pair = W_sparse.nnz
+            CR = n_candidates_pair / (n_items * n_items)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "ItemANNLSH",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "n_hash": self._n_hash,
+                "n_tables": self._n_tables,
+                "similarity_threshold": self._similarity_threshold,
+                "w": 1, # default w is 1, maybe should log actual w if used
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
 
         del self._similarity_matrix
 

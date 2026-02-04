@@ -88,7 +88,8 @@ class VSM(RecMixin, BaseRecommenderModel):
                                          for item, i_item in self._data.public_items.items()}
             self._sp_i_item_features = self.build_feature_sparse(self._i_item_feature_dict, self._num_items)
 
-        self._model = Similarity(self._data, self._sp_i_user_features, self._sp_i_item_features, self._similarity)
+        self._model = Similarity(self._data, self._sp_i_user_features, self._sp_i_item_features, self._similarity,
+                                 csv_path=self._csv_path)
 
     def get_single_recommendation(self, mask, k, *args):
         return {u: self._model.get_user_recs(u, mask, k) for u in self._ratings.keys()}

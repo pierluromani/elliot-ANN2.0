@@ -61,7 +61,8 @@ class AttributeItemKNN(RecMixin, BaseRecommenderModel):
                                 in self._data.public_items.items()}
         self._sp_i_features = self.build_feature_sparse()
 
-        self._model = Similarity(data=self._data, attribute_matrix=self._sp_i_features, num_neighbors=self._num_neighbors, similarity=self._similarity, implicit=self._implicit)
+        self._model = Similarity(data=self._data, attribute_matrix=self._sp_i_features, num_neighbors=self._num_neighbors,
+                                 similarity=self._similarity, implicit=self._implicit, csv_path=self._csv_path)
 
     def get_single_recommendation(self, mask, k, *args):
         return {u: self._model.get_user_recs(u, mask, k) for u in self._ratings.keys()}
