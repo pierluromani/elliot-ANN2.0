@@ -71,7 +71,10 @@ class Similarity(object):
 
         if self._csv_path:
             n_users = self._data.num_users
-            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            if self._similarity == 'euclidean':
+                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            else:
+                n_candidates_pair = (self._URM @ self._URM.T).nnz
             CR = n_candidates_pair / (n_users * n_users)
             print(f"CR: {CR}")
             
@@ -84,6 +87,7 @@ class Similarity(object):
             }
             add_CR_instance(self._csv_path, meta_data)
 
+        if self._similarity == 'euclidean':
             data, rows_indices, cols_indptr = [], [], []
 
             column_row_index = np.arange(len(self._users), dtype=np.int32)

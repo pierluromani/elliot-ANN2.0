@@ -57,7 +57,10 @@ class LSHfaissSimilarity(object):
         self.process_similarity(self._similarity)  # the resulting matrix will be an ndarray
 
         # Calculate the CR
-        n_candidates_pair= np.count_nonzero(self._similarity_matrix)
+        if self._similarity == 'euclidean':
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+        else:
+            n_candidates_pair = (self._URM.T @ self._URM).nnz
         CR= n_candidates_pair / (len(self._items) * len(self._items))
         print(f"CR: {CR}")
         

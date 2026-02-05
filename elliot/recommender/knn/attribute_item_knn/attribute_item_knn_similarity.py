@@ -81,8 +81,10 @@ class Similarity(object):
         # Calculate and log CR
         if self._csv_path:
             n_items = self._data.num_items
-            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-            n_candidates_pair = W_sparse.nnz
+            if self._similarity == 'euclidean':
+                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            else:
+                n_candidates_pair = (self._attribute_matrix @ self._attribute_matrix.T).nnz
             CR = n_candidates_pair / (n_items * n_items)
             print(f"CR: {CR}")
             

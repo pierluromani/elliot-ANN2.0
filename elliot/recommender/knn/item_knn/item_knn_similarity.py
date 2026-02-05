@@ -80,7 +80,7 @@ class Similarity(object):
             W_sparse = sim.tversky(self._URM.T, k=self._num_neighbors, alpha=self._tversky_alpha,
                                    beta=self._tversky_beta, binary=True, format_output='csr')
         elif self._similarity == "euclidean":
-            self._similarity_matrix = np.empty((len(self._items), len(self._items)))
+            self._similarity_matrix = np.zeros((len(self._items), len(self._items)))
             self._similarity_matrix = (1 / (1 + euclidean_distances(self._URM.T))) # avoid function call
             data, rows_indices, cols_indptr = [], [], []
 
@@ -104,10 +104,10 @@ class Similarity(object):
                                          shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
         if self._csv_path:
             n_items = self._data.num_items
-            if hasattr(self, '_similarity_matrix'):
+            if self._similarity == "euclidean":
                 n_candidates_pair = np.count_nonzero(self._similarity_matrix)
             else:
-                n_candidates_pair = W_sparse.nnz
+                n_candidates_pair = (self._URM.T @ self._URM).nnz
             CR = n_candidates_pair / (n_items * n_items)
             print(f"CR: {CR}")
             
@@ -119,7 +119,8 @@ class Similarity(object):
                 "CR": CR
             }
             add_CR_instance(self._csv_path, meta_data)
-        del self._similarity_matrix
+        if self._similarity == "euclidean":
+            del self._similarity_matrix
 
         # self._similarity_matrix = normalize(self._similarity_matrix, norm='l1', axis=1)
 

@@ -22,7 +22,7 @@ experiment:
     #     validation_metric: nDCGRendle2020@20
     #     hyper_opt_alg: grid
     #   neighbors: [ 50 ]
-    #   similarity: [ euclidean ]
+    #   similarity: [ cosine ]
     #   implementation: standard
     # ItemFairANN:
     #   meta:
@@ -62,6 +62,6 @@ experiment:
         hyper_opt_alg: grid
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50 ]
-      similarity: [ euclidean ]
+      similarity: [ cosine ]
     
  
