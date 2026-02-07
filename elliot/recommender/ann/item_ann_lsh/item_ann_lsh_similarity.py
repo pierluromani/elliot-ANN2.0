@@ -97,7 +97,7 @@ class ANNLSHSimilarity(object):
                 n_candidates_pair = np.count_nonzero(self._similarity_matrix)
             else:
                 n_candidates_pair = (self._URM.T @ self._URM).nnz
-            CR = n_candidates_pair / (n_items * n_items)
+            CR = n_candidates_pair / (len(self._items) * len(self._items))
             print(f"CR: {CR}")
             
             meta_data = {
@@ -134,7 +134,11 @@ class ANNLSHSimilarity(object):
         elif similarity == "euclidean":
             similarity_function = lambda a, b: 1 / (1 + pairwise_distances(a,b, metric="euclidean", n_jobs=-1))
         elif similarity == "jaccard":
+            # OLD LINE (Causes Warning):
             similarity_function = lambda a, b: 1 / (1 + pairwise_distances(a,b, metric="jaccard", n_jobs=-1))
+
+            # NEW LINE (Fixes Warning):
+            similarity_function = lambda a, b: 1 / (1 + pairwise_distances(a.astype(bool), b.astype(bool), metric="jaccard", n_jobs=-1))
         _, _, candidates, _, _ = self._lsh_index.preprocess_query(self._URM.T.toarray())
         for item, neighbors in enumerate(candidates):
             # Get the representation vector for the current item

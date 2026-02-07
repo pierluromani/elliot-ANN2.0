@@ -289,6 +289,8 @@ class MinHash():
         # x << 24 is a shift to left by 24 bits (add digits)
         # They apply a XOR of the hash functions
         # Tabulation hashing is an efficient method to build hash functions
+        # Added Integer cast
+        x = int(x)
         return self.t1[(x >> 24) & 0xff] ^ self.t2[(x >> 16) & 0xff] ^ \
             self.t3[(x >> 8) & 0xff] ^ self.t4[x & 0xff]
 
