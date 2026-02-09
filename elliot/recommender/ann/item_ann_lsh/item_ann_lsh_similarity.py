@@ -69,6 +69,23 @@ class ANNLSHSimilarity(object):
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity)  # the resulting matrix will be an ndarray
 
+        # Calculate and log CR
+        if self._csv_path:
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            CR = n_candidates_pair / (len(self._items) * len(self._items))
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "ItemANNLSH",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "n_hash": self._n_hash,
+                "n_tables": self._n_tables,
+                "similarity_threshold": self._similarity_threshold,
+                "w": 1, # default w is 1, maybe should log actual w if used
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
         data, rows_indices, cols_indptr = [], [], []
 
         column_row_index = np.arange(len(self._data.items), dtype=np.int32)
@@ -91,26 +108,7 @@ class ANNLSHSimilarity(object):
                                      shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
         self._preds = self._URM.dot(W_sparse)
         
-        # Calculate and log CR
-        if self._csv_path:
-            if self._similarity == 'euclidean':
-                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-            else:
-                n_candidates_pair = (self._URM.T @ self._URM).nnz
-            CR = n_candidates_pair / (len(self._items) * len(self._items))
-            print(f"CR: {CR}")
-            
-            meta_data = {
-                "model": "ItemANNLSH",
-                "neighbors": self._num_neighbors,
-                "similarity": self._similarity,
-                "n_hash": self._n_hash,
-                "n_tables": self._n_tables,
-                "similarity_threshold": self._similarity_threshold,
-                "w": 1, # default w is 1, maybe should log actual w if used
-                "CR": CR
-            }
-            add_CR_instance(self._csv_path, meta_data)
+        
 
         del self._similarity_matrix
 

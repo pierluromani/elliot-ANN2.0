@@ -57,6 +57,23 @@ class ANNOYSimilarity(object):
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity)  # the resulting matrix will be an ndarray
 
+        # Calculate and log CR
+        if self._csv_path:
+            n_items = self._data.num_items
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            CR = n_candidates_pair / (n_items * n_items)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "ItemAnnoy",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "n_trees": self._n_trees,
+                "search_k": self._search_k,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
+
         data, rows_indices, cols_indptr = [], [], []
 
         column_row_index = np.arange(len(self._data.items), dtype=np.int32)
@@ -79,25 +96,7 @@ class ANNOYSimilarity(object):
                                      shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
         self._preds = self._URM.dot(W_sparse)
         
-        # Calculate and log CR
-        if self._csv_path:
-            n_items = self._data.num_items
-            if self._similarity == 'euclidean':
-                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-            else:
-                n_candidates_pair = (self._URM.T @ self._URM).nnz
-            CR = n_candidates_pair / (n_items * n_items)
-            print(f"CR: {CR}")
-            
-            meta_data = {
-                "model": "ItemAnnoy",
-                "neighbors": self._num_neighbors,
-                "similarity": self._similarity,
-                "n_trees": self._n_trees,
-                "search_k": self._search_k,
-                "CR": CR
-            }
-            add_CR_instance(self._csv_path, meta_data)
+        
 
         del self._similarity_matrix
 

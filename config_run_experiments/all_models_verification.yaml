@@ -67,23 +67,23 @@ experiment:
     #    neighbors: [ 50 ]
     #    similarity: cosine
     #    nbits: [ 4 ]
-    ItemFairANN:
-      meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-      neighbors: [ 50,100 ]
-      similarity: [cosine,euclidean]
-      sampling_strategy: [ approx_degree ]
-      n_hash: [ 4 ]
-      n_tables: [ 8 ]
-    UserFairANN:
-      meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-      neighbors: [ 50,100 ]
-      similarity: [ cosine, euclidean ]
-      sampling_strategy: [ approx_degree ]
-      n_hash: [ 4 ]
-      n_tables: [ 8 ]
+    # ItemFairANN:
+    #   meta:
+    #     verbose: True
+    #     save_recs: False
+    #     validation_metric: nDCGRendle2020@20
+    #   neighbors: [ 50,100 ]
+    #   similarity: [cosine,euclidean]
+    #   sampling_strategy: [ approx_degree ]
+    #   n_hash: [ 4 ]
+    #   n_tables: [ 8 ]
+    # UserFairANN:
+    #   meta:
+    #     verbose: True
+    #     save_recs: False
+    #     validation_metric: nDCGRendle2020@20
+    #   neighbors: [ 50,100 ]
+    #   similarity: [ cosine, euclidean ]
+    #   sampling_strategy: [ approx_degree ]
+    #   n_hash: [ 4 ]
+    #   n_tables: [ 8 ]
