@@ -21,8 +21,8 @@ experiment:
         save_recs: False
         validation_metric: nDCGRendle2020@20
         hyper_opt_alg: grid
-      neighbors: [ 50 ]
-      similarity: [ cosine, euclidean ]
+      neighbors: [ 50,100]
+      similarity: [ cosine, euclidean,jaccard]
       implementation: standard
     UserKNN:
       meta:
@@ -30,50 +30,50 @@ experiment:
         save_recs: False
         validation_metric: nDCGRendle2020@20
         hyper_opt_alg: grid
-      neighbors: [ 50 ]
+      neighbors: [ 50,100 ]
       similarity: [ cosine, euclidean ]
       implementation: standard
-    ItemANNOY:
-      meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-      neighbors: [ 50 ]
-      similarity: [ hamming ]
-      n_trees: [ 10 ]
-      search_k: [ -1 ]
-    UserANNOY:
-      meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-      neighbors: [ 50 ]
-      similarity: [ hamming ]
-      n_trees: [ 10 ]
-      search_k: [ -1 ]
-    ItemANNfaissLSH:
-       meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-       neighbors: [ 50 ]
-       similarity: cosine
-       nbits: [ 4 ]
-    UserANNfaissLSH:
-       meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-       neighbors: [ 50 ]
-       similarity: cosine
-       nbits: [ 4 ]
+    # ItemANNOY:
+    #   meta:
+    #     verbose: True
+    #     save_recs: False
+    #     validation_metric: nDCGRendle2020@20
+    #   neighbors: [ 50 ]
+    #   similarity: [ hamming ]
+    #   n_trees: [ 10 ]
+    #   search_k: [ -1 ]
+    # UserANNOY:
+    #   meta:
+    #     verbose: True
+    #     save_recs: False
+    #     validation_metric: nDCGRendle2020@20
+    #   neighbors: [ 50 ]
+    #   similarity: [ hamming ]
+    #   n_trees: [ 10 ]
+    #   search_k: [ -1 ]
+    # ItemANNfaissLSH:
+    #    meta:
+    #     verbose: True
+    #     save_recs: False
+    #     validation_metric: nDCGRendle2020@20
+    #    neighbors: [ 50 ]
+    #    similarity: cosine
+    #    nbits: [ 4 ]
+    # UserANNfaissLSH:
+    #    meta:
+    #     verbose: True
+    #     save_recs: False
+    #     validation_metric: nDCGRendle2020@20
+    #    neighbors: [ 50 ]
+    #    similarity: cosine
+    #    nbits: [ 4 ]
     ItemFairANN:
       meta:
         verbose: True
         save_recs: False
         validation_metric: nDCGRendle2020@20
-      neighbors: [ 50 ]
-      similarity: [ jaccard ]
+      neighbors: [ 50,100 ]
+      similarity: [cosine,euclidean]
       sampling_strategy: [ approx_degree ]
       n_hash: [ 4 ]
       n_tables: [ 8 ]
@@ -82,8 +82,8 @@ experiment:
         verbose: True
         save_recs: False
         validation_metric: nDCGRendle2020@20
-      neighbors: [ 50 ]
-      similarity: [ jaccard ]
+      neighbors: [ 50,100 ]
+      similarity: [ cosine, euclidean ]
       sampling_strategy: [ approx_degree ]
       n_hash: [ 4 ]
       n_tables: [ 8 ]

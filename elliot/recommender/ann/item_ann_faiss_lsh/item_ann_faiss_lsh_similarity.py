@@ -15,12 +15,13 @@ class LSHfaissSimilarity(object):
     ANN class to compute the similarity in an approximated way by exploiting LSH
     """
 
-    def __init__(self, data, num_neighbors, similarity, implicit, nbits, csv_path=None):
+    def __init__(self, data, num_neighbors, similarity, implicit, nbits, n_tables, csv_path=None):
         self._data = data
         self._ratings = data.train_dict  # TODO capire se serve oppure no, è un dizionario {UserId: {ItemId:Rating}}
         self._num_neighbors = num_neighbors
         self._similarity = similarity
         self._nbits = nbits
+        self._n_tables = n_tables
         self._csv_path = csv_path
         self._implicit = implicit # tells whether to use the ratings as explicit or implicit feedbacks
 
@@ -35,14 +36,6 @@ class LSHfaissSimilarity(object):
         self._public_users = self._data.public_users  # contains the mapping from public ID to private ID
         self._private_items = self._data.private_items  # contains the mapping from private ID to public ID
         self._public_items = self._data.public_items  # contains the mapping from public ID to private ID
-
-        # instantiate an IndexLSH object
-        # first input argument is d, second one is nbits
-        # d is the dimensionality of the data we need to index -> the items are represented in terms of users
-        # nbits controls the number of buckets we create
-        self._index_faiss_lsh = faiss.IndexLSH(len(self._data.users), self._nbits)
-
-
 
     def initialize(self):
         """
@@ -70,6 +63,7 @@ class LSHfaissSimilarity(object):
                 "neighbors": self._num_neighbors,
                 "similarity": self._similarity,
                 "nbits": self._nbits,
+                "n_tables": self._n_tables,
                 "CR": CR
             }
             add_CR_instance(self._csv_path, meta_data)
@@ -100,13 +94,43 @@ class LSHfaissSimilarity(object):
         del self._similarity_matrix
 
     def process_similarity(self, similarity):
-        print("Building the index with FAISS LSH...")
-        # here we exploit the FAISS IndexLSH object to compute the similarity
-        self._index_faiss_lsh.add(self._URM.T.toarray())
-        print("Index built successfully!")
-        print("Retrieving the candidate neighbors")
-        # retrieve the k-neighbors
-        _, candidates = self._index_faiss_lsh.search(self._URM.T.toarray(), self._num_neighbors)
+        print(f"Building the index with FAISS LSH using {self._n_tables} tables...")
+        
+        # d is the dimensionality of the data we need to index -> the items are represented in terms of users
+        d = len(self._data.users)
+        
+        # Dictionary to store candidate sets for each item
+        # candidate_neighbors[item_idx] = set of neighbor indices
+        candidate_neighbors = {}
+        
+        X = self._URM.T.toarray().astype('float32')
+
+        for table in range(self._n_tables):
+            print(f"Processing table {table + 1}/{self._n_tables}...")
+            
+            # Generate random projection matrix
+            # shape (d, nbits)
+            rotation_matrix = np.random.normal(0, 1, (d, self._nbits)).astype('float32')
+            
+            # Project data
+            X_proj = np.dot(X, rotation_matrix)
+            
+            # Initialize FAISS IndexLSH
+            # We use nbits for both d and nbits because we leverage the projection
+            # rotate_data=False because we already projected
+            # train_thresholds=False because we want standard LSH behavior
+            index = faiss.IndexLSH(self._nbits, self._nbits, False, False)
+            
+            index.add(X_proj)
+            
+            # Retrieve k-neighbors
+            # We search X_proj against itself
+            _, candidates = index.search(X_proj, self._num_neighbors)
+            
+            for item_idx, neighbors in enumerate(candidates):
+                if item_idx not in candidate_neighbors:
+                    candidate_neighbors[item_idx] = set()
+                candidate_neighbors[item_idx].update(neighbors)
 
         # TODO: il sampling effettuato è con replacement, quindi abbiamo meno di k vicini -> pensare ad una soluzione
         # candidates is a 2-d Numpy array, the i-th row contains the neighbors of the i-th item
@@ -117,9 +141,12 @@ class LSHfaissSimilarity(object):
             raise ValueError("Compute Similarity: value for parameter 'similarity' not recognized."
                              f"\nAllowed values are: {self.supported_similarities}, {self.supported_dissimilarities}."
                              f"\nPassed value was {similarity}\n")
+        
         print("Computing the similarity matrix...")
-        for item, neighbors in enumerate(tqdm(candidates)):
-            self._similarity_matrix[item, neighbors] = similarity_function(self._URM.T[neighbors], self._URM.T[item]).reshape(-1)
+        for item, neighbors in tqdm(candidate_neighbors.items()):
+            neighbors_list = list(neighbors)
+            if len(neighbors_list) > 0:
+                self._similarity_matrix[item, neighbors_list] = similarity_function(self._URM.T[neighbors_list], self._URM.T[item]).reshape(-1)
         print("Similarity matrix computed successfully!")
 
 
@@ -160,6 +187,7 @@ class LSHfaissSimilarity(object):
         saving_dict['_num_neighbors'] = self._num_neighbors
         saving_dict['_implicit'] = self._implicit
         saving_dict['_nbits'] = self._nbits
+        saving_dict['_n_tables'] = self._n_tables
         return saving_dict
 
     def set_model_state(self, saving_dict):
@@ -168,6 +196,7 @@ class LSHfaissSimilarity(object):
         self._num_neighbors = saving_dict['_num_neighbors']
         self._implicit = saving_dict['_implicit']
         self._nbits = saving_dict['_nbits']
+        self._n_tables = saving_dict['_n_tables']
 
     def load_weights(self, path):
         with open(path, "rb") as f:
