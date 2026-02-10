@@ -70,12 +70,7 @@ class Similarity(object):
             self._similarity_matrix = (1 / (1 + euclidean_distances(self._URM))) # avoid the function call
 
         if self._csv_path:
-            n_users = self._data.num_users
-            if self._similarity == 'euclidean':
-                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-            else:
-                n_candidates_pair = (self._URM @ self._URM.T).nnz
-            CR = n_candidates_pair / (n_users * n_users)
+            CR=1.0
             print(f"CR: {CR}")
             
             meta_data = {

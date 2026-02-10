@@ -198,13 +198,7 @@ class Similarity(object):
                                          dtype=np.float32).tocsr()
         
         if self._csv_path:
-            n_items = self._data.num_items
-            if self._similarity == "euclidean":
-                 n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-            else:
-                 n_candidates_pair = (self._URM.T @ self._URM).nnz
-            
-            CR = n_candidates_pair / (n_items * n_items)
+            CR=1.0
             print(f"CR: {CR}")
             
             meta_data = {
