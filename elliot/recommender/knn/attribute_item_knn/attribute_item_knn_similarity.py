@@ -52,7 +52,7 @@ class Similarity(object):
         #
         # self._transactions = self._data.transactions
 
-        self._similarity_matrix = np.empty((len(self._items), len(self._items)))
+        self._similarity_matrix = np.zeros((len(self._items), len(self._items)))
 
         self.process_similarity(self._similarity)
         ##############

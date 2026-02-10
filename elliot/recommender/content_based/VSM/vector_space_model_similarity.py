@@ -38,7 +38,7 @@ class Similarity(object):
         print(f"Supported Distances/Dissimilarities: {supported_dissimilarities}\n")
 
         self._transactions = self._data.transactions
-        self._similarity_matrix = np.empty((len(self._users), len(self._items)))
+        self._similarity_matrix = np.zeros((len(self._users), len(self._items)))
 
         self.process_similarity(self._similarity)
         

@@ -50,7 +50,7 @@ class ANNOYSimilarity(object):
         print(f"\nSupported distances: {self.supported_dissimilarities}\n")
 
         # initialize the similarity matrix
-        self._similarity_matrix = np.empty((len(self._users), len(self._users)))
+        self._similarity_matrix = np.zeros((len(self._users), len(self._users)))
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity)  # the resulting matrix will be an ndarray
         
