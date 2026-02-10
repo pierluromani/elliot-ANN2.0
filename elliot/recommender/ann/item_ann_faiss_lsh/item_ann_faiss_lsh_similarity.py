@@ -49,12 +49,12 @@ class LSHfaissSimilarity(object):
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity)  # the resulting matrix will be an ndarray
 
-        # Calculate the CR
-        n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-        CR= n_candidates_pair / (len(self._items) * len(self._items))
-        print(f"CR: {CR}")
-        
         if self._csv_path:
+            # Calculate the CR
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            CR= n_candidates_pair / (len(self._items) * len(self._items))
+            print(f"CR: {CR}")
+
             meta_data = {
                 "model": "ItemANNFaissLSH",
                 "neighbors": self._num_neighbors,

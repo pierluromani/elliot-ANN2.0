@@ -86,12 +86,13 @@ class LSHSimilarity(object):
         # process the similarity matrix by giving the similarity parameter
         self.process_similarity(self._similarity, self._sampling_strategy)  # the resulting matrix will be an ndarray
 
-        # Calculate the CR
-        n_candidates_pair= np.count_nonzero(self._similarity_matrix)
-        CR= n_candidates_pair / (len(self._items) * len(self._items))
-        print(f"CR: {CR}")
-        self.meta_data["CR"] = CR
+        
         if self._csv_path:
+            # Calculate the CR
+            n_candidates_pair= np.count_nonzero(self._similarity_matrix)
+            CR= n_candidates_pair / (len(self._items) * len(self._items))
+            print(f"CR: {CR}")
+            self.meta_data["CR"] = CR
             add_CR_instance(self._csv_path, self.meta_data)
 
 

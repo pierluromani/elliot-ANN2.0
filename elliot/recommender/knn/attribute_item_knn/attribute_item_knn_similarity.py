@@ -56,6 +56,23 @@ class Similarity(object):
 
         self.process_similarity(self._similarity)
         ##############
+
+        # Calculate and log CR
+        if self._csv_path:
+            n_items = self._data.num_items
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            CR = n_candidates_pair / (n_items * n_items)
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "AttributeItemKNN",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
+        
         data, rows_indices, cols_indptr = [], [], []
 
         column_row_index = np.arange(len(self._data.items), dtype=np.int32)
@@ -78,24 +95,7 @@ class Similarity(object):
                                      shape=(len(self._data.items), len(self._data.items)), dtype=np.float32).tocsr()
         self._preds = self._URM.dot(W_sparse).toarray()
         
-        # Calculate and log CR
-        if self._csv_path:
-            n_items = self._data.num_items
-            if self._similarity == 'euclidean':
-                n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-            else:
-                n_candidates_pair = (self._attribute_matrix @ self._attribute_matrix.T).nnz
-            CR = n_candidates_pair / (n_items * n_items)
-            print(f"CR: {CR}")
-            
-            meta_data = {
-                "model": "AttributeItemKNN",
-                "neighbors": self._num_neighbors,
-                "similarity": self._similarity,
-                "implicit": self._implicit,
-                "CR": CR
-            }
-            add_CR_instance(self._csv_path, meta_data)
+        
         ##############
         # self.compute_neighbors()
 
