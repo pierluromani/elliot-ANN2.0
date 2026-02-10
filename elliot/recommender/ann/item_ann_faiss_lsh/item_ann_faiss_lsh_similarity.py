@@ -103,7 +103,7 @@ class LSHfaissSimilarity(object):
         X = self._URM.T.toarray().astype('float32')
 
         for table in range(self._n_tables):
-            print(f"Processing table {table + 1}/{self._n_tables}...")
+            # print(f"Processing table {table + 1}/{self._n_tables}...")
             
             # Generate random projection matrix
             # shape (d, nbits)

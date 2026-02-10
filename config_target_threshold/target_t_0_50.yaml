@@ -7,7 +7,7 @@ experiment:
   top_k: 50
   evaluation:
     cutoffs:  20
-    simple_metrics: [ nDCGRendle2020, EPC, Gini ]
+    simple_metrics: [ nDCGRendle2020, Recall, HR, Precision, MAP, MRR, ItemCoverage, ACLT, Gini, SEntropy, EFD, EPC, PopREO, PopRSP ]
   csv_path: ./results/target_t_0_50/performance/CR_verification.csv
   external_models_path: ../external/models/__init__.py
   models:
@@ -21,16 +21,6 @@ experiment:
       neighbors: [ 50, 100, 250]
       similarity: [ jaccard, cosine ]
       implementation: standard
-    ItemFairANN:
-      meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-      neighbors: [ 50, 100, 250 ]
-      similarity: [ jaccard, cosine ]
-      sampling_strategy: [ exact_degree, aprox_degree, opt, no_sampling ]
-      n_hash: [ 10 ]
-      n_tables: [ 58 ]
     ItemANNOY:
       meta:
         verbose: True
@@ -49,14 +39,24 @@ experiment:
       similarity: [ jaccard, cosine ]
       nbits: [ 8 ]
       n_tables: [ 26 ]
-    ItemKNNfairness:
+    ItemFairANN:
       meta:
         verbose: True
         save_recs: False
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ jaccard, cosine ]
-      pre_post_processing: interactions-items
+      sampling_strategy: [ exact_degree, aprox_degree, opt, no_sampling ]
+      n_hash: [ 10 ]
+      n_tables: [ 58 ]
+#    ItemKNNfairness:
+#      meta:
+#        verbose: True
+#        save_recs: False
+#        validation_metric: nDCGRendle2020@20
+#      neighbors: [ 50, 100, 250 ]
+#      similarity: [ jaccard, cosine ]
+#      pre_post_processing: interactions-items
 
     # USER
     UserKNN:
@@ -68,16 +68,6 @@ experiment:
       neighbors: [ 50, 100, 250 ]
       similarity: [ jaccard, cosine ]
       implementation: standard
-    UserFairANN:
-      meta:
-        verbose: True
-        save_recs: False
-        validation_metric: nDCGRendle2020@20
-      neighbors: [ 50, 100, 250 ]
-      similarity: [ jaccard, cosine ]
-      sampling_strategy: [ exact_degree, aprox_degree, opt, no_sampling ]
-      n_hash: [ 10 ]
-      n_tables: [ 58 ]
     UserANNOY:
       meta:
         verbose: True
@@ -96,11 +86,21 @@ experiment:
       similarity: [ jaccard, cosine ]
       nbits: [ 8 ]
       n_tables: [ 26 ]
-    UserKNNfairness:
+    UserFairANN:
       meta:
         verbose: True
         save_recs: False
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ jaccard, cosine ]
-      pre_post_processing: interactions-users
+      sampling_strategy: [ exact_degree, aprox_degree, opt, no_sampling ]
+      n_hash: [ 10 ]
+      n_tables: [ 58 ]
+#    UserKNNfairness:
+#      meta:
+#        verbose: True
+#        save_recs: False
+#        validation_metric: nDCGRendle2020@20
+#      neighbors: [ 50, 100, 250 ]
+#      similarity: [ jaccard, cosine ]
+#      pre_post_processing: interactions-users
