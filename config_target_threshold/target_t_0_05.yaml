@@ -28,7 +28,7 @@ experiment:
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ jaccard, cosine ]
-      sampling_strategy: [ exact_degree, aprox_degree, opt, no_sampling ]
+      sampling_strategy: [ exact_degree, approx_degree, opt, no_sampling ]
       n_hash: [ 6 ]
       n_tables: [ 53 ]
     ItemANNOY:
@@ -75,7 +75,7 @@ experiment:
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ jaccard, cosine ]
-      sampling_strategy: [ exact_degree, aprox_degree, opt, no_sampling ]
+      sampling_strategy: [ exact_degree, approx_degree, opt, no_sampling ]
       n_hash: [ 6 ]
       n_tables: [ 53 ]
     UserANNOY:
