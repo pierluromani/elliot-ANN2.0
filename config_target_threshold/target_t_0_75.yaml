@@ -41,7 +41,7 @@ experiment:
         save_recs: False
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
-      similarity: [ jaccard, cosine ]
+      similarity: cosine
       nbits: [ 12 ]
       n_tables: [ 23 ]
     ItemFairANN:
@@ -88,7 +88,7 @@ experiment:
         save_recs: False
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
-      similarity: [ jaccard, cosine ]
+      similarity: cosine
       nbits: [ 12 ]
       n_tables: [ 23 ]
     UserFairANN:
