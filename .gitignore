@@ -15,6 +15,7 @@ pyvenv.cfg
 .venv
 /venv/
 pip-selfcheck.json
+.antigravity/
 
 .idea
 # End of https://www.toptal.com/developers/gitignore/api/venv
