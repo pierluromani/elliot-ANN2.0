@@ -4,6 +4,12 @@ experiment:
     strategy: fixed
     train_path: ../data/movielens_100k/filtered_data/0/train.tsv
     test_path: ../data/movielens_100k/filtered_data/0/test.tsv
+    side_information:
+    - dataloader: ItemPopularityUserTolerance
+      user_file: ../data/movielens_100k/users_tolerance_2.tsv
+      item_file: ../data/movielens_100k/items_popularity_2.tsv
+      user_group_file: ../data/movielens_100k/group_tolerance_2_to_users.json
+      item_group_file: ../data/movielens_100k/group_popularity_2_to_items.json
   top_k: 50
   evaluation:
     cutoffs:  20
@@ -49,14 +55,14 @@ experiment:
       similarity: [ jaccard, cosine ]
       nbits: [ 4 ]
       n_tables: [ 14 ]
-#    ItemKNNfairness:
-#      meta:
-#        verbose: True
-#        save_recs: False
-#        validation_metric: nDCGRendle2020@20
-#      neighbors: [ 50, 100, 250 ]
-#      similarity: [ jaccard, cosine ]
-#      pre_post_processing: interactions-items
+    ItemKNNfairness:
+      meta:
+        verbose: True
+        save_recs: False
+        validation_metric: nDCGRendle2020@20
+      neighbors: [ 50, 100, 250 ]
+      similarity: [ jaccard, cosine ]
+      pre_post_processing: [interactions-users, interactions-items]
 
     # USER
     UserKNN:
@@ -96,11 +102,11 @@ experiment:
       similarity: [ jaccard, cosine ]
       nbits: [ 4 ]
       n_tables: [ 14 ]
-#    UserKNNfairness:
-#      meta:
-#        verbose: True
-#        save_recs: False
-#        validation_metric: nDCGRendle2020@20
-#      neighbors: [ 50, 100, 250 ]
-#      similarity: [ jaccard, cosine ]
-#      pre_post_processing: interactions-users
+    UserKNNfairness:
+      meta:
+        verbose: True
+        save_recs: False
+        validation_metric: nDCGRendle2020@20
+      neighbors: [ 50, 100, 250 ]
+      similarity: [ jaccard, cosine ]
+      pre_post_processing: [interactions-users, interactions-items]
