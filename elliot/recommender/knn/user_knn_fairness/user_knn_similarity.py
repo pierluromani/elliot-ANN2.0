@@ -46,6 +46,19 @@ class Similarity(object):
         print(f"\nSupported Similarities: {self.supported_similarities}")
         print(f"Supported Distances/Dissimilarities: {self.supported_dissimilarities}\n")
 
+        # Calculate and log CR
+        if self._csv_path:
+            CR=1.0
+            print(f"CR: {CR}")
+            
+            meta_data = {
+                "model": "UserKNNFairness",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "CR": CR
+            }
+            add_CR_instance(self._csv_path, meta_data)
         if self._pre_post_processing == None or self._pre_post_processing in ['value', 'parity']:
             # avoid pre processing if a post processing will be applied
             pass
@@ -172,21 +185,7 @@ class Similarity(object):
 
             # self.process_similarity(self._similarity)
             self._similarity_matrix = (1 / (1 + euclidean_distances(self._URM))) # avoid the function call
-            
-            # Calculate and log CR
-            if self._csv_path:
-                CR=1.0
-                print(f"CR: {CR}")
-                
-                meta_data = {
-                    "model": "UserKNNFairness",
-                    "neighbors": self._num_neighbors,
-                    "similarity": self._similarity,
-                    "implicit": self._implicit,
-                    "CR": CR
-                }
-                add_CR_instance(self._csv_path, meta_data)
-
+        
             data, rows_indices, cols_indptr = [], [], []
 
             column_row_index = np.arange(len(self._users), dtype=np.int32)
