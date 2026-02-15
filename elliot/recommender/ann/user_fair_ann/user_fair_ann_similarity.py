@@ -66,7 +66,6 @@ class LSHSimilarity(object):
                 "n_hash": self._n_hash,
                 "n_tables": self._n_tables,
                 "similarity_threshold": self._similarity_threshold,
-                "CR": CR,
                 "w": w}
 
     def initialize(self):
@@ -87,11 +86,11 @@ class LSHSimilarity(object):
         
         # Calculate and log CR
         if self._csv_path:
-            n_users = self._data.num_users
-            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
-            CR = n_candidates_pair / (n_users * n_users)
+            # Calculate the CR
+            n_candidates_pair= np.count_nonzero(self._similarity_matrix)
+            CR= n_candidates_pair / (len(self._items) * len(self._items))
             print(f"CR: {CR}")
-            
+            self.meta_data["CR"] = CR
             add_CR_instance(self._csv_path, self.meta_data)
 
         data, rows_indices, cols_indptr = [], [], []
