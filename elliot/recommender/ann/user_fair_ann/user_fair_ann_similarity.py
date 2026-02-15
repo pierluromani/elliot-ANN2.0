@@ -57,6 +57,17 @@ class LSHSimilarity(object):
         # for the item-based methods, d is the number of users on the platform
         self._lsh_index = LSHBuilder.build(d=len(self._items), r=self._similarity_threshold, k=self._n_hash,
                                            L=self._n_tables, lsh_params=lsh_params, validate=validate)
+        self.meta_data = {
+                "model": "UserFairANN",
+                "neighbors": self._num_neighbors,
+                "similarity": self._similarity,
+                "implicit": self._implicit,
+                "sampling_strategy": self._sampling_strategy,
+                "n_hash": self._n_hash,
+                "n_tables": self._n_tables,
+                "similarity_threshold": self._similarity_threshold,
+                "CR": CR,
+                "w": w}
 
     def initialize(self):
         """
@@ -81,18 +92,7 @@ class LSHSimilarity(object):
             CR = n_candidates_pair / (n_users * n_users)
             print(f"CR: {CR}")
             
-            meta_data = {
-                "model": "UserFairANN",
-                "neighbors": self._num_neighbors,
-                "similarity": self._similarity,
-                "implicit": self._implicit,
-                "sampling_strategy": self._sampling_strategy,
-                "n_hash": self._n_hash,
-                "n_tables": self._n_tables,
-                "similarity_threshold": self._similarity_threshold,
-                "CR": CR
-            }
-            add_CR_instance(self._csv_path, meta_data)
+            add_CR_instance(self._csv_path, self.meta_data)
 
         data, rows_indices, cols_indptr = [], [], []
 
