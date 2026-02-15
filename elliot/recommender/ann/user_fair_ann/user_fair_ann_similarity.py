@@ -87,8 +87,9 @@ class LSHSimilarity(object):
         # Calculate and log CR
         if self._csv_path:
             # Calculate the CR
-            n_candidates_pair= np.count_nonzero(self._similarity_matrix)
-            CR= n_candidates_pair / (len(self._items) * len(self._items))
+            n_users = self._data.num_users
+            n_candidates_pair = np.count_nonzero(self._similarity_matrix)
+            CR = n_candidates_pair / (n_users * n_users)
             print(f"CR: {CR}")
             self.meta_data["CR"] = CR
             add_CR_instance(self._csv_path, self.meta_data)
