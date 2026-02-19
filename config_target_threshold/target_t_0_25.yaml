@@ -13,7 +13,7 @@ experiment:
   top_k: 50
   evaluation:
     cutoffs:  20
-    simple_metrics: [ nDCGRendle2020, Recall, HR, Precision, MAP, MRR, ItemCoverage, ACLT, Gini, SEntropy, EFD, EPC, PopREO, PopRSP ]
+    simple_metrics: [ nDCGRendle2020, Recall, HR, Precision, MAP, MRR, ItemCoverage, ACLT, APLT, Gini, SEntropy, EFD, EPC, PopREO, PopRSP ]
   csv_path: ./results/target_t_0_25/performance/CR_verification.csv
   external_models_path: ../external/models/__init__.py
   models:
@@ -21,7 +21,7 @@ experiment:
     ItemKNN:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
         hyper_opt_alg: grid
       neighbors: [ 50, 100, 250]
@@ -30,7 +30,7 @@ experiment:
     ItemANNOY:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ angular ]
@@ -39,7 +39,7 @@ experiment:
     ItemANNfaissLSH:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: cosine
@@ -48,17 +48,17 @@ experiment:
     ItemFairANN:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
-      similarity: [ jaccard, cosine ]
+      similarity: cosine
       sampling_strategy: [no_sampling, opt, uniform, rank, approx_degree]
       n_hash: [ 8 ]
       n_tables: [ 78 ]
     ItemKNNfairness:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ jaccard, cosine ]
@@ -68,7 +68,7 @@ experiment:
     UserKNN:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
         hyper_opt_alg: grid
       neighbors: [ 50, 100, 250 ]
@@ -77,17 +77,17 @@ experiment:
     UserFairANN:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
-      similarity: [ jaccard, cosine ]
+      similarity: cosine
       sampling_strategy: [no_sampling, opt, uniform, rank, approx_degree]
       n_hash: [ 8 ]
       n_tables: [ 78 ]
     UserANNOY:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ angular ]
@@ -96,7 +96,7 @@ experiment:
     UserANNfaissLSH:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: cosine
@@ -105,7 +105,7 @@ experiment:
     UserKNNfairness:
       meta:
         verbose: True
-        save_recs: False
+        save_recs: True
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ jaccard, cosine ]
