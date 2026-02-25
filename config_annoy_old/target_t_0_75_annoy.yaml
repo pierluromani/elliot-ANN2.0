@@ -24,8 +24,8 @@ experiment:
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ angular ]
-      n_trees: [ 6 ]
-      search_k: [ -1 ]
+      n_trees: [ 3 ]
+      search_k: [ 100,200,500,-1 ]
 
     UserANNOY:
       meta:
@@ -34,5 +34,5 @@ experiment:
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ angular ]
-      n_trees: [ 6 ]
-      search_k: [ -1 ]
+      n_trees: [ 2 ]
+      search_k: [ 10, 25, 50,100, 200, 500,-1 ]

@@ -1,5 +1,5 @@
 experiment:
-  dataset: target_t_0_75_annoy
+  dataset: target_t_0_50_annoy
   data_config:
     strategy: fixed
     train_path: ../data/movielens_100k/filtered_data/0/train.tsv
@@ -14,7 +14,7 @@ experiment:
   evaluation:
     cutoffs:  20
     simple_metrics: [ nDCGRendle2020, Recall, HR, Precision, MAP, MRR, ItemCoverage, ACLT, APLT, Gini, SEntropy, EFD, EPC, PopREO, PopRSP ]
-  csv_path: ./results/target_t_0_75_annoy/performance/CR_verification.csv
+  csv_path: ./results/target_t_0_50_annoy/performance/CR_verification.csv
   external_models_path: ../external/models/__init__.py
   models:
     ItemANNOY:
@@ -24,8 +24,8 @@ experiment:
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ angular ]
-      n_trees: [ 6 ]
-      search_k: [ -1 ]
+      n_trees: [ 5 ]
+      search_k: [ 100,200,500,-1 ]
 
     UserANNOY:
       meta:
@@ -34,5 +34,5 @@ experiment:
         validation_metric: nDCGRendle2020@20
       neighbors: [ 50, 100, 250 ]
       similarity: [ angular ]
-      n_trees: [ 6 ]
-      search_k: [ -1 ]
+      n_trees: [ 4 ]
+      search_k: [ 10, 25, 50,100, 200, 500,-1 ]
